@@ -1,11 +1,18 @@
-#include "mainwindow.h"
-#include <QApplication>
+#include "main.h"
+#include "AppDelegate.h"
+#include "cocos2d.h"
 
-int main(int argc, char *argv[])
+USING_NS_CC;
+
+int WINAPI _tWinMain(HINSTANCE hInstance,
+                       HINSTANCE hPrevInstance,
+                       LPTSTR    lpCmdLine,
+                       int       nCmdShow)
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
 
-    return a.exec();
+    // create the application instance
+    AppDelegate app;
+    return Application::getInstance()->run();
 }
