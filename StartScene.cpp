@@ -2,6 +2,7 @@
 #include "BagScene.h"
 #include "HelloWorldScene.h"
 #include "World1.h"
+#include "BattleScene.h"
 bool StartScene::init() {
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	auto BackGround = Sprite::create(".\\startscene\\Tower1.png");
@@ -14,7 +15,7 @@ bool StartScene::init() {
 	auto StartButton = Menu::create(MenuItemImage::create(".\\startscene\\startNormal.png",
 		".\\startscene\\startSelected.png", 
 		[](Object *obj) {
-		Director::getInstance()->replaceScene(World1::create());
+		Director::getInstance()->replaceScene(BattleScene::createScene("World1"));
 	}), NULL);
 	StartButton->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	addChild(StartButton, 2);
