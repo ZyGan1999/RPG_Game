@@ -1,6 +1,7 @@
 #include "World1.h"
 #include "Player.h"
 #include "Actions.h"
+#include "BagScene.h"
 #include <fstream>
 #include <algorithm>
 string World1::MapFileName = ".\\World1\\MapFile.txt";
@@ -32,6 +33,7 @@ bool World1::init() {
 
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
+		if (code == EventKeyboard::KeyCode::KEY_B) Director::getInstance()->pushScene(BagScene::create());
 		keys[code] = true;
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {

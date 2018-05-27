@@ -4,19 +4,27 @@
 #include <map>
 #include <string>
 #include "Enemy.h"
+#include "Player.h"
 using namespace std;
 using namespace cocos2d;
 class BattleScene:public Scene
 {
 public:
 	virtual bool init();
-	static Scene * createScene(string mapName);
+	static Scene * createScene();
 	CREATE_FUNC(BattleScene);
-	virtual void enemyMove(float dt);
+	void enemyMove(float dt);
+	void update(float dt);
 private:
-	static string _mapName;//to do
+	PlayerStatus * ps;
+	Sprite * player;
+	static string mapName;//to do
 	vector<Enemy * >_enemies;
 	void LoadFromFile(string mapName);
 	static map<string, string> enemyfile;
+	map<EventKeyboard::KeyCode, bool> keys;
+	EventKeyboard::KeyCode lastDirection;
+	string PlayerHPStatus;
+	LabelTTF * HP_INFO;
 };
 

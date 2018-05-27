@@ -4,6 +4,8 @@ int PlayerStatus::HP = 10;
 int PlayerStatus::MP = 10;
 int PlayerStatus::HPMax = 100;
 int PlayerStatus::MPMax = 100;
+bool PlayerStatus::isBlinking = false;
+bool PlayerStatus::BlinkingFrozen = false;
 PlayerStatus * PlayerStatus::getInstance()
 {
 	if (instance == nullptr) instance = new PlayerStatus;
@@ -18,6 +20,7 @@ void PlayerStatus::AddHP(int delta)
 
 void PlayerStatus::SubHP(int delta)
 {
+	if (isBlinking) return;
 	HP -= delta;
 	HP = _max(HP, 0);
 }

@@ -13,7 +13,7 @@ public:
 	void LoadFromFile();
 	void update(float delta);
 	static int GRID_SIZE;
-	Sprite* isCollided();
+
 private:
 	vector<Sprite*> _objs;
 	static string MapFileName;
@@ -22,6 +22,7 @@ private:
 	map<EventKeyboard::KeyCode, bool> keys;
 	Sprite *player;
 	EventKeyboard::KeyCode lastDirection;
-	void Fix();
+	void Fix();	
+	Sprite* isCollided();
 };
 

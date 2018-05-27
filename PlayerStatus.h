@@ -7,6 +7,10 @@ private:
 	static int MP;
 	static int HPMax;
 	static int MPMax;
+
+	static bool isBlinking;
+	static bool BlinkingFrozen;
+
 	static inline int _min(int a, int b) {
 		return a < b ? a : b;
 	}
@@ -33,6 +37,21 @@ public:
 	}
 	static int getMPMax() {
 		return MPMax;
+	}
+	static bool isBlinkingFrozen() {
+		return BlinkingFrozen;
+	}
+	void FreezeBlinking() {
+		BlinkingFrozen = true;
+	}
+	void unFreezeBlinking() {
+		BlinkingFrozen = false;
+	}
+	void setBlinking() {
+		isBlinking = true;
+	}
+	void setUnBlinking() {
+		isBlinking = false;
 	}
 };
 

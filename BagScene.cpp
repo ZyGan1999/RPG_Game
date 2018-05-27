@@ -38,7 +38,7 @@ bool BagScene::init() {
 	auto backNormal = Sprite::create("back.png"); backNormal->setContentSize(objectsize);
 	auto backSelected = Sprite::create("back.png"); backSelected->setContentSize(objectsize / 1.5);
 	auto menu = Menu::create(MenuItemSprite::create(backNormal,backSelected, [](Object *obj) {
-		Director::getInstance()->replaceScene(StartScene::create());
+		Director::getInstance()->popScene();
 	}), NULL);
 	/*auto menu = Menu::create(MenuItemImage::create("back.png", "back.png", [](Object *obj) {
 		Director::getInstance()->replaceScene(StartScene::create());
