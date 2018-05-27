@@ -1,6 +1,6 @@
 #include "PlayerStatus.h"
 PlayerStatus * PlayerStatus::instance = new PlayerStatus;
-int PlayerStatus::HP = 10;
+int PlayerStatus::HP = 100;
 int PlayerStatus::MP = 10;
 int PlayerStatus::HPMax = 100;
 int PlayerStatus::MPMax = 100;

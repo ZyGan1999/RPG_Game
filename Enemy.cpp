@@ -33,7 +33,8 @@ void Enemy::seekPlayer()
 				ps->setUnBlinking();
 			});
 			auto seq1 = Sequence::create(delayTime1, UB, nullptr);
-			
+			this->runAction(seq1);
+
 			auto delayTime2 = DelayTime::create(3.0f);
 			auto UF = CallFunc::create([this]()
 			{

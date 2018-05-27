@@ -5,6 +5,7 @@
 #include <string>
 #include "Enemy.h"
 #include "Player.h"
+#include "FireBall.h"
 using namespace std;
 using namespace cocos2d;
 class BattleScene:public Scene
@@ -26,5 +27,7 @@ private:
 	EventKeyboard::KeyCode lastDirection;
 	string PlayerHPStatus;
 	LabelTTF * HP_INFO;
+	vector<FireBall * > _fireballs;
+	void CallFireBall();
 };
 
