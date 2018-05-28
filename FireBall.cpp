@@ -10,5 +10,5 @@ bool FireBall::init()
 
 void FireBall::GoAround()
 {
-	runAction(RepeatForever::create(RotateBy::create(1, 360)));
+	runAction(RepeatForever::create(RotateBy::create(1.5, 360)));
 }

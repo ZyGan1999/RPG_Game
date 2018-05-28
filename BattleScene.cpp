@@ -44,11 +44,21 @@ bool BattleScene::init()
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keylistener, this);
 
+	auto touchlistener = EventListenerTouchOneByOne::create();
+	touchlistener->onTouchBegan = [&](Touch *t, Event *e) {
+		if (!_fireballs.empty()) {
+			_fireballs[0]->setAnchorPoint(Vec2(0.5, 0.5));
+			_fireballs[0]->runAction(MoveBy::create(2, 10 * Vec2(t->getLocation().x - player->getPositionX(), t->getLocation().y - player->getPositionY())));
+			_fireballs.erase(_fireballs.begin());
+		}
+		return true;
+	};
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchlistener, this);
 	PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
 	HP_INFO = LabelTTF::create(PlayerHPStatus, "Courier", 36); HP_INFO->setColor(Color3B(255, 0, 0));
 	HP_INFO->setPosition(visiablesize.width * 0.8, visiablesize.height / 5);
 
-	addChild(HP_INFO, 6);
+	addChild(HP_INFO, 8);
 	return true;
 }
 
@@ -75,7 +85,7 @@ void BattleScene::update(float dt)
 	addChild(HP_INFO, 6);
 
 	for (auto it = _fireballs.begin(); it != _fireballs.end(); ++it) {
-		switch ((*it)->getTag()) {
+		/*switch ((*it)->getTag()) {
 		case 1: {
 			(*it)->setPosition(player->getPositionX(), player->getPositionY() + 100);
 			break;
@@ -88,7 +98,8 @@ void BattleScene::update(float dt)
 			(*it)->setPosition(player->getPositionX() - 100, player->getPositionY() - 100);
 			break;
 		}
-		}
+		}*/
+		(*it)->setPosition(player->getPositionX(), player->getPositionY());
 	}
 
 	Actions a;
@@ -112,12 +123,19 @@ void BattleScene::LoadFromFile(string mapName) {
 
 void BattleScene::CallFireBall()
 {
-	auto f1 = FireBall::create(); f1->setPosition(player->getPositionX(), player->getPositionY() + 100); f1->setTag(1);
+	/*auto f1 = FireBall::create(); f1->setPosition(player->getPositionX(), player->getPositionY() + 100); f1->setTag(1);
 	auto f2 = FireBall::create(); f2->setPosition(player->getPositionX() + 100, player->getPositionY() - 100); f2->setTag(2);
 	auto f3 = FireBall::create(); f3->setPosition(player->getPositionX() - 100, player->getPositionY() - 100); f3->setTag(3);
-	_fireballs.push_back(f1); _fireballs.push_back(f2); _fireballs.push_back(f3);
+	_fireballs.push_back(f1); _fireballs.push_back(f2); _fireballs.push_back(f3);*/
+
+	auto f1 = FireBall::create(); f1->setAnchorPoint(Vec2(0.5, -0.7));
+	auto f2 = FireBall::create(); f2->setAnchorPoint(Vec2(1.7, 0.5));
+	auto f3 = FireBall::create(); f3->setAnchorPoint(Vec2(0.5, 1.7));
+	auto f4 = FireBall::create(); f4->setAnchorPoint(Vec2(-0.7, 0.5));
+	_fireballs.push_back(f1); _fireballs.push_back(f2); _fireballs.push_back(f3); _fireballs.push_back(f4);
 	for (auto it = _fireballs.begin(); it != _fireballs.end(); ++it) {
-		addChild((*it), 8);
+		(*it)->setPosition(player->getPositionX(), player->getPositionY());
+		addChild((*it), 7);
 		(*it)->GoAround();
 	}
 }
