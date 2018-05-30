@@ -4,6 +4,7 @@
 #include <cmath>
 bool Enemy::init()
 {
+	HP = 50;
 	player = Player::getInstance();
 	ps = PlayerStatus::getInstance();
 	return true;
@@ -23,9 +24,9 @@ void Enemy::seekPlayer()
 	}
 	else {
 		ps->SubHP(7);
-		if(!ps->isBlinkingFrozen()){
+		if(!ps->isPlayerBlinking()){
 			ps->setBlinking();
-			ps->FreezeBlinking();
+			//ps->FreezeBlinking();
 			player->runAction(Blink::create(1, 5));
 			auto delayTime1 = DelayTime::create(1.0f);
 			auto UB = CallFunc::create([this]() 
@@ -35,13 +36,13 @@ void Enemy::seekPlayer()
 			auto seq1 = Sequence::create(delayTime1, UB, nullptr);
 			this->runAction(seq1);
 
-			auto delayTime2 = DelayTime::create(3.0f);
+			/*auto delayTime2 = DelayTime::create(3.0f);
 			auto UF = CallFunc::create([this]()
 			{
 				ps->unFreezeBlinking();
 			});
 			auto seq2 = Sequence::create(delayTime2, UF, nullptr);
-			this->runAction(seq2);
+			this->runAction(seq2);*/
 		}
 
 	}

@@ -28,6 +28,13 @@ private:
 	string PlayerHPStatus;
 	LabelTTF * HP_INFO;
 	vector<FireBall * > _fireballs;
+	vector<FireBall * > _releasedFireBalls;
 	void CallFireBall();
+	bool inRange(int x, int inf, int sup) {
+		if (x <= sup && x >= inf) {
+			return true;
+		}
+		else return false;
+	}
 };
 

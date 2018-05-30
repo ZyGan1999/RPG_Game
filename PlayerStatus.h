@@ -41,6 +41,9 @@ public:
 	static bool isBlinkingFrozen() {
 		return BlinkingFrozen;
 	}
+	static bool isPlayerBlinking() {
+		return isBlinking;
+	}
 	void FreezeBlinking() {
 		BlinkingFrozen = true;
 	}
