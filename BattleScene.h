@@ -17,6 +17,7 @@ public:
 	void enemyMove(float dt);
 	void update(float dt);
 private:
+	Layer * enemyLayer;
 	PlayerStatus * ps;
 	Sprite * player;
 	static string mapName;//to do

@@ -12,6 +12,7 @@ map<string, string> BattleScene::enemyfile = {
 
 bool BattleScene::init()
 {
+	enemyLayer = Layer::create();
 	ps = PlayerStatus::getInstance();
 	player = Player::getInstance();
 	this->scheduleUpdate();
@@ -20,10 +21,11 @@ bool BattleScene::init()
 	player->setPosition(visiablesize.width / 5, visiablesize.height / 5);
 	addChild(player, 3);
 	LoadFromFile(mapName);
-	auto enemyLayer = Layer::create();
+	/*auto enemyLayer = Layer::create();*/
 	for (auto it = _enemies.begin(); it != _enemies.end(); ++it) {
 		enemyLayer->addChild((*it));
 		(*it)->setPosition(visiablesize.width / 2, visiablesize.height / 2);
+		(*it)->setBlood(enemyLayer);
 	}
 	addChild(enemyLayer, 4);
 
@@ -38,6 +40,10 @@ bool BattleScene::init()
 		if (code == EventKeyboard::KeyCode::KEY_R) {
 			CallFireBall();
 			return;
+		}
+		else if (code == EventKeyboard::KeyCode::KEY_Q) {
+			Actions a;
+			a.SideStep(this, lastDirection);
 		}
 		keys[code] = true;
 	};
@@ -95,6 +101,11 @@ void BattleScene::update(float dt)
 	if (keys[EventKeyboard::KeyCode::KEY_W])player->runAction(a.MoveUp), lastDirection = EventKeyboard::KeyCode::KEY_W;
 	if (keys[EventKeyboard::KeyCode::KEY_S])player->runAction(a.MoveDown), lastDirection = EventKeyboard::KeyCode::KEY_S;
 	if (ps->getHP() == 0) Director::getInstance()->replaceScene(GameOverScene::create());
+	for (auto e = _enemies.begin(); e != _enemies.end(); ++e) {
+		(*e)->removeBlood();
+		(*e)->updateHP();
+		(*e)->setBlood(enemyLayer);
+	}
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	HP_INFO->removeFromParent();
 	PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
@@ -160,6 +171,7 @@ void BattleScene::update(float dt)
 
 		for (auto it = _enemies.begin(); it != _enemies.end(); ) {
 			if ((*it)->getHP() <= 0) {
+				(*it)->removeBlood();
 				(*it)->removeFromParent();
 				it = _enemies.erase(it);
 			}

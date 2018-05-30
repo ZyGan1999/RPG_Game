@@ -3,8 +3,10 @@
 #include "PlayerStatus.h"
 #include <cmath>
 bool Enemy::init()
-{
-	HP = 50;
+{	
+	HP = 50; HPMax = 50;
+	blood1 = Sprite::create(".\\Enemy\\blood1.png", Rect(0, 0, (HP / HPMax) * 150, 10));
+	blood2 = Sprite::create(".\\Enemy\\blood2.png");
 	player = Player::getInstance();
 	ps = PlayerStatus::getInstance();
 	return true;
@@ -21,6 +23,8 @@ void Enemy::seekPlayer()
 		double r = sqrt(deltaX * deltaX + deltaY * deltaY) / 48;
 		deltaX /= r; deltaY /= r;
 		this->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
+		blood1->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
+		blood2->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
 	}
 	else {
 		ps->SubHP(7);
