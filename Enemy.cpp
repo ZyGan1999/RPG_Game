@@ -39,14 +39,6 @@ void Enemy::seekPlayer()
 			});
 			auto seq1 = Sequence::create(delayTime1, UB, nullptr);
 			this->runAction(seq1);
-
-			/*auto delayTime2 = DelayTime::create(3.0f);
-			auto UF = CallFunc::create([this]()
-			{
-				ps->unFreezeBlinking();
-			});
-			auto seq2 = Sequence::create(delayTime2, UF, nullptr);
-			this->runAction(seq2);*/
 		}
 
 	}

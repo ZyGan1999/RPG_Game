@@ -17,6 +17,7 @@ public:
 	void enemyMove(float dt);
 	void update(float dt);
 private:
+	Layer * shadeLayer;
 	Layer * enemyLayer;
 	PlayerStatus * ps;
 	Sprite * player;
@@ -31,11 +32,16 @@ private:
 	vector<FireBall * > _fireballs;
 	vector<FireBall * > _releasedFireBalls;
 	void CallFireBall();
+	void CallSideStep();
 	bool inRange(int x, int inf, int sup) {
 		if (x <= sup && x >= inf) {
 			return true;
 		}
 		else return false;
 	}
+	int FireBallCD;
+	int SideStepCD;
+	LabelTTF * FBCD;
+	LabelTTF * SSCD;
 };
 

@@ -6,6 +6,8 @@ int PlayerStatus::HPMax = 100;
 int PlayerStatus::MPMax = 100;
 bool PlayerStatus::isBlinking = false;
 bool PlayerStatus::BlinkingFrozen = false;
+bool PlayerStatus::isFBCD = false;
+bool PlayerStatus::isSSCD = false;
 PlayerStatus * PlayerStatus::getInstance()
 {
 	if (instance == nullptr) instance = new PlayerStatus;

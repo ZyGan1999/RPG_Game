@@ -64,89 +64,55 @@ Actions::Actions() {
 	MoveDown = Spawn::create(downsteps_animate, downmovement, NULL);
 }
 
-void Actions::SideStep(Scene * s, EventKeyboard::KeyCode code)
+void Actions::SideStep(Layer * s, EventKeyboard::KeyCode code)
 {
 	switch (code) {
 	case EventKeyboard::KeyCode::KEY_A:{
-		LShade1->setPosition(player->getPositionX(), player->getPositionY());
-		LShade2->setPosition(player->getPositionX(), player->getPositionY());
-		LShade3->setPosition(player->getPositionX(), player->getPositionY());
 		s->addChild(LShade1, player->getLocalZOrder());
 		s->addChild(LShade2, player->getLocalZOrder());
 		s->addChild(LShade3, player->getLocalZOrder());
-		player->runAction(MoveBy::create(0.2, Vec2(-50, 0)));
-		LShade1->runAction(MoveBy::create(0.4, Vec2(-50, 0)));
-		LShade2->runAction(MoveBy::create(0.6, Vec2(-50, 0)));
-		LShade3->runAction(MoveBy::create(0.8, Vec2(-50, 0)));
-		auto delayTime = DelayTime::create(1.0f);
-		auto DLE = CallFunc::create([this]()
-		{
-			LShade1->removeFromParentAndCleanup(true);
-			LShade2->removeFromParentAndCleanup(true);
-			LShade3->removeFromParentAndCleanup(true);
-		});
-		auto seq1 = Sequence::create(delayTime, DLE, nullptr);
-		s->runAction(seq1);
+		LShade1->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() - 70, player->getPositionY());
+		LShade2->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() - 70, player->getPositionY());
+		LShade3->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() - 70, player->getPositionY());
 		break;
 		}
 	case EventKeyboard::KeyCode::KEY_D: {
-		RShade1->setPosition(player->getPositionX(), player->getPositionY());
-		RShade2->setPosition(player->getPositionX(), player->getPositionY());
-		RShade3->setPosition(player->getPositionX(), player->getPositionY());
 		s->addChild(RShade1, player->getLocalZOrder());
 		s->addChild(RShade2, player->getLocalZOrder());
 		s->addChild(RShade3, player->getLocalZOrder());
-		player->runAction(MoveBy::create(0.2, Vec2(50, 0)));
-		RShade1->runAction(MoveBy::create(0.4, Vec2(50, 0))); RShade1->setPosition(-100, -100);
-		RShade2->runAction(MoveBy::create(0.6, Vec2(50, 0))); RShade2->setPosition(-100, -100);
-		RShade3->runAction(MoveBy::create(0.8, Vec2(50, 0))); RShade3->setPosition(-100, -100);
-		RShade1->removeFromParentAndCleanup(true);
-		RShade2->removeFromParentAndCleanup(true);
-		RShade3->removeFromParentAndCleanup(true);
+		RShade1->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() + 70, player->getPositionY());
+		RShade2->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() + 70, player->getPositionY());
+		RShade3->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX() + 70, player->getPositionY());
 		break;
 	}
 	case EventKeyboard::KeyCode::KEY_W: {
-		UShade1->setPosition(player->getPositionX(), player->getPositionY());
-		UShade2->setPosition(player->getPositionX(), player->getPositionY());
-		UShade3->setPosition(player->getPositionX(), player->getPositionY());
 		s->addChild(UShade1, player->getLocalZOrder());
 		s->addChild(UShade2, player->getLocalZOrder());
 		s->addChild(UShade3, player->getLocalZOrder());
-		player->runAction(MoveBy::create(0.2, Vec2(0, 50)));
-		UShade1->runAction(MoveBy::create(0.4, Vec2(0, 50)));
-		UShade2->runAction(MoveBy::create(0.6, Vec2(0, 50)));
-		UShade3->runAction(MoveBy::create(0.8, Vec2(0, 50)));
-		auto delayTime = DelayTime::create(1.0f);
-		auto DLE = CallFunc::create([this]()
-		{
-			UShade1->removeFromParentAndCleanup(true);
-			UShade2->removeFromParentAndCleanup(true);
-			UShade3->removeFromParentAndCleanup(true);
-		});
-		auto seq1 = Sequence::create(delayTime, DLE, nullptr);
-		s->runAction(seq1);
+		UShade1->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() + 70);
+		UShade2->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() + 70);
+		UShade3->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() + 70);
 		break;
 	}
 	case EventKeyboard::KeyCode::KEY_S: {
-		DShade1->setPosition(player->getPositionX(), player->getPositionY());
-		DShade2->setPosition(player->getPositionX(), player->getPositionY());
-		DShade3->setPosition(player->getPositionX(), player->getPositionY());
 		s->addChild(DShade1, player->getLocalZOrder());
 		s->addChild(DShade2, player->getLocalZOrder());
 		s->addChild(DShade3, player->getLocalZOrder());
-		player->runAction(MoveBy::create(0.2, Vec2(0, -50)));
-		DShade1->runAction(MoveBy::create(0.4, Vec2(0, -50)));
-		DShade2->runAction(MoveBy::create(0.6, Vec2(0, -50)));
-		DShade3->runAction(MoveBy::create(0.8, Vec2(0, -50)));
-		auto delayTime = DelayTime::create(1.0f);
-		auto DLE = CallFunc::create([this]()
-		{
-			DShade1->removeFromParentAndCleanup(true);
-			DShade2->removeFromParentAndCleanup(true);
-			DShade3->removeFromParentAndCleanup(true);
-		});
-		auto seq1 = Sequence::create(delayTime, DLE, nullptr);
-		s->runAction(seq1);
+		DShade1->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() - 70);
+		DShade2->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() - 70);
+		DShade3->setPosition(player->getPositionX(), player->getPositionY());
+		player->setPosition(player->getPositionX(), player->getPositionY() - 70);
 		break;
 	}
 	}

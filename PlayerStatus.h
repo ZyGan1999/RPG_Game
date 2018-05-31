@@ -7,7 +7,8 @@ private:
 	static int MP;
 	static int HPMax;
 	static int MPMax;
-
+	static bool isFBCD;
+	static bool isSSCD;
 	static bool isBlinking;
 	static bool BlinkingFrozen;
 
@@ -55,6 +56,24 @@ public:
 	}
 	void setUnBlinking() {
 		isBlinking = false;
+	}
+	void setFBCD() {
+		isFBCD = true;
+	}
+	void releaseFBCD() {
+		isFBCD = false;
+	}
+	void setSSCD() {
+		isSSCD = true;
+	}
+	void releaseSSCD() {
+		isSSCD = false;
+	}
+	bool CheckFBCD() {
+		return isFBCD;
+	}
+	bool CheckSSCD() {
+		return isSSCD;
 	}
 };
 

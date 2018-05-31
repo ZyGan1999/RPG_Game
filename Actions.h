@@ -9,7 +9,7 @@ public:
 	Spawn* MoveRight;
 	Spawn* MoveUp;
 	Spawn* MoveDown;
-	void SideStep(Scene * ,EventKeyboard::KeyCode );
+	void SideStep(Layer * ,EventKeyboard::KeyCode );
 	static int GRID_SIZE;
 	
 private:
