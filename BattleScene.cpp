@@ -12,6 +12,28 @@ map<string, string> BattleScene::enemyfile = {
 
 bool BattleScene::init()
 {
+	auto visiablesize = Director::getInstance()->getVisibleSize();
+	ps = PlayerStatus::getInstance();
+	player = Player::getInstance();
+	PLAYER_HP_RED = Sprite::create(".\\player\\blood1.png", Rect(0, 0, ((double)ps->getHP() / ps->getHPMax()) * 250, 30));
+	PLAYER_HP_GRAY = Sprite::create(".\\player\\blood2.png");
+	PLAYER_HP_RED->setAnchorPoint(Vec2(0, 0.5)); PLAYER_HP_GRAY->setAnchorPoint(Vec2(0, 0.5));
+	PLAYER_HP_RED->setPosition(visiablesize.width / 5, visiablesize.height*0.8);
+	PLAYER_HP_GRAY->setPosition(visiablesize.width / 5, visiablesize.height*0.8);
+	addChild(PLAYER_HP_RED, 9); addChild(PLAYER_HP_GRAY, 8);
+
+	PLAYER_MP_BLUE = Sprite::create(".\\player\\Magic.png", Rect(0, 0, ((double)ps->getMP() / ps->getMPMax()) * 250, 30));
+	PLAYER_MP_GRAY = Sprite::create(".\\player\\blood2.png");
+	PLAYER_MP_BLUE->setAnchorPoint(Vec2(0, 0.5)); PLAYER_MP_GRAY->setAnchorPoint(Vec2(0, 0.5));
+	PLAYER_MP_BLUE->setPosition(PLAYER_HP_GRAY->getPositionX(), PLAYER_HP_GRAY->getPositionY() - 30);
+	PLAYER_MP_GRAY->setPosition(PLAYER_HP_GRAY->getPositionX(), PLAYER_HP_GRAY->getPositionY() - 30);
+	addChild(PLAYER_MP_BLUE, 9); addChild(PLAYER_MP_GRAY, 8);
+
+	PlayerFace = Sprite::create(".\\player\\face.png");
+	PlayerFace->setAnchorPoint(Vec2(1, 0.75));
+	PlayerFace->setPosition(PLAYER_HP_GRAY->getPosition());
+	addChild(PlayerFace, 8);
+
 	FireBallCD = 0;
 	SideStepCD = 0;
 	FBCD = LabelTTF::create(to_string(FireBallCD / 60), "Courier", 36);
@@ -20,11 +42,10 @@ bool BattleScene::init()
 	shadeLayer = Layer::create();
 	addChild(shadeLayer, 4);
 	enemyLayer = Layer::create();
-	ps = PlayerStatus::getInstance();
-	player = Player::getInstance();
+
 	this->scheduleUpdate();
 	schedule(schedule_selector(BattleScene::enemyMove), 1.0f);
-	auto visiablesize = Director::getInstance()->getVisibleSize();
+
 	player->setPosition(visiablesize.width / 5, visiablesize.height / 5);
 	addChild(player, 3);
 	LoadFromFile(mapName);
@@ -44,14 +65,21 @@ bool BattleScene::init()
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
 		if (code == EventKeyboard::KeyCode::KEY_R) {
-			if (!ps->CheckFBCD())CallFireBall();
+			if (!ps->CheckFBCD() && ps->getMP() >= 40) {
+				CallFireBall();
+				ps->SubMP(40);
+			}
 			return;
 		}
 		else if (code == EventKeyboard::KeyCode::KEY_SPACE) {
-			if (!ps->CheckSSCD())CallSideStep();
-			return;
+			if (!ps->CheckSSCD() && ps->getMP() >= 5) {
+				CallSideStep();
+				ps->SubMP(5);
+				return;
+			}
 		}
-		keys[code] = true;
+			keys[code] = true;
+		
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {
 		keys[code] = false;
@@ -65,17 +93,24 @@ bool BattleScene::init()
 			auto f = &_fireballs[0];
 			_releasedFireBalls.push_back((*f));
 			(*f)->setAnchorPoint(Vec2(0.5, 0.5));
-			(*f)->runAction(MoveBy::create(2, 10 * Vec2(t->getLocation().x - player->getPositionX(), t->getLocation().y - player->getPositionY())));
+
+			double deltaX = t->getLocation().x - (*f)->getPositionX();
+			double deltaY = t->getLocation().y - (*f)->getPositionY();
+
+			double r = sqrt(deltaX * deltaX + deltaY * deltaY) / 1500;
+			deltaX /= r; deltaY /= r;
+
+			(*f)->runAction(MoveBy::create(1.5, Vec2(deltaX, deltaY)));
 			_fireballs.erase(_fireballs.begin());
 		}
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchlistener, this);
-	PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
-	HP_INFO = LabelTTF::create(PlayerHPStatus, "Courier", 36); HP_INFO->setColor(Color3B(255, 0, 0));
-	HP_INFO->setPosition(visiablesize.width * 0.8, visiablesize.height / 5);
+	//PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
+	//HP_INFO = LabelTTF::create(PlayerHPStatus, "Courier", 36); HP_INFO->setColor(Color3B(255, 0, 0));
+	//HP_INFO->setPosition(visiablesize.width * 0.8, visiablesize.height / 5);
 
-	addChild(HP_INFO, 8);
+	//addChild(HP_INFO, 8);
 	return true;
 }
 
@@ -121,18 +156,29 @@ void BattleScene::update(float dt)
 		(*e)->setBlood(enemyLayer);
 	}
 	auto visiablesize = Director::getInstance()->getVisibleSize();
-	HP_INFO->removeFromParent();
-	PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
-	HP_INFO = LabelTTF::create(PlayerHPStatus, "Courier", 36); HP_INFO->setColor(Color3B(255, 0, 0));
-	HP_INFO->setPosition(visiablesize.width * 0.8, visiablesize.height / 5);
-	addChild(HP_INFO, 6);
+	//HP_INFO->removeFromParent();
+	//PlayerHPStatus = to_string(ps->getHP()) + " / " + to_string(ps->getHPMax());
+	//HP_INFO = LabelTTF::create(PlayerHPStatus, "Courier", 36); HP_INFO->setColor(Color3B(255, 0, 0));
+	//HP_INFO->setPosition(visiablesize.width * 0.8, visiablesize.height / 5);
+	//addChild(HP_INFO, 6);
+
+	PLAYER_HP_RED->removeFromParent(); //PLAYER_HP_GRAY->removeFromParent();
+	PLAYER_HP_RED = Sprite::create(".\\player\\blood1.png", Rect(0, 0, ((double)ps->getHP ()/ ps->getHPMax()) * 250, 30));
+	PLAYER_HP_RED->setAnchorPoint(Vec2(0, 0.5));
+	PLAYER_HP_RED->setPosition(visiablesize.width / 5, visiablesize.height*0.8);
+	addChild(PLAYER_HP_RED, 9);
+	PLAYER_MP_BLUE->removeFromParent();
+	PLAYER_MP_BLUE = Sprite::create(".\\player\\Magic.png", Rect(0, 0, ((double)ps->getMP() / ps->getMPMax()) * 250, 30));
+	PLAYER_MP_BLUE->setAnchorPoint(Vec2(0, 0.5));
+	PLAYER_MP_BLUE->setPosition(PLAYER_HP_GRAY->getPositionX(), PLAYER_HP_GRAY->getPositionY() - 30);
+	addChild(PLAYER_MP_BLUE, 9);
 
 	FBCD->removeFromParent();
-	FBCD = LabelTTF::create(to_string(FireBallCD + 60 / 60), "Courier", 36); FBCD->setColor(Color3B(0, 255, 255));
-	addChild(FBCD, 8); FBCD->setPosition(HP_INFO->getPositionX(), HP_INFO->getPositionY() + 100);
+	FBCD = LabelTTF::create(to_string((FireBallCD + 59) / 60), "Courier", 36); FBCD->setColor(Color3B(255, 255, 0));
+	addChild(FBCD, 8); FBCD->setPosition(PLAYER_HP_GRAY->getPositionX() + 60, PLAYER_HP_GRAY->getPositionY() - 60);
 	SSCD->removeFromParent();
-	SSCD = LabelTTF::create(to_string(SideStepCD + 60 / 60), "Courier", 36); SSCD->setColor(Color3B(255, 255, 0));
-	addChild(SSCD, 8); SSCD->setPosition(HP_INFO->getPositionX(), HP_INFO->getPositionY() + 200);
+	SSCD = LabelTTF::create(to_string((SideStepCD + 59) / 60), "Courier", 36); SSCD->setColor(Color3B(0, 255, 255));
+	addChild(SSCD, 8); SSCD->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 60);
 
 	if (!_fireballs.empty())
 		for (auto it = _fireballs.begin(); it != _fireballs.end(); ) {

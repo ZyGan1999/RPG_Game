@@ -21,6 +21,11 @@ private:
 	Layer * enemyLayer;
 	PlayerStatus * ps;
 	Sprite * player;
+	Sprite * PLAYER_HP_RED;
+	Sprite * PLAYER_HP_GRAY;
+	Sprite * PLAYER_MP_BLUE;
+	Sprite * PLAYER_MP_GRAY;
+	Sprite * PlayerFace;
 	static string mapName;//to do
 	vector<Enemy * >_enemies;
 	void LoadFromFile(string mapName);
