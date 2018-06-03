@@ -26,6 +26,9 @@ private:
 	Sprite * PLAYER_MP_BLUE;
 	Sprite * PLAYER_MP_GRAY;
 	Sprite * PlayerFace;
+	Sprite * FBspic1; Sprite * FBspic2;
+	Sprite * SSspic1; Sprite * SSspic2;
+	ProgressTimer * FBTimer; ProgressTimer * SSTimer;
 	static string mapName;//to do
 	vector<Enemy * >_enemies;
 	void LoadFromFile(string mapName);
@@ -46,7 +49,7 @@ private:
 	}
 	int FireBallCD;
 	int SideStepCD;
-	LabelTTF * FBCD;
-	LabelTTF * SSCD;
+	/*LabelTTF * FBCD;
+	LabelTTF * SSCD;*/
 };
 

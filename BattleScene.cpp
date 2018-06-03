@@ -4,6 +4,7 @@
 #include "Actions.h"
 #include "PlayerStatus.h"
 #include "GameOverScene.h"
+#include "NormalAttack.h"
 #include <fstream>
 string BattleScene::mapName = "World1";
 map<string, string> BattleScene::enemyfile = {
@@ -36,9 +37,27 @@ bool BattleScene::init()
 
 	FireBallCD = 0;
 	SideStepCD = 0;
-	FBCD = LabelTTF::create(to_string(FireBallCD / 60), "Courier", 36);
+	/*FBCD = LabelTTF::create(to_string(FireBallCD / 60), "Courier", 36);
 	SSCD = LabelTTF::create(to_string(SideStepCD / 60), "Courier", 36);
-	addChild(FBCD, 8); addChild(SSCD, 8);
+	addChild(FBCD, 8); addChild(SSCD, 8);*/
+
+	FBspic1 = Sprite::create(".\\Skills\\FireBallNormal.png");
+	FBspic2 = Sprite::create(".\\Skills\\FireBallFrozen.png");
+	SSspic1 = Sprite::create(".\\Skills\\SideStepNormal.png");
+	SSspic2 = Sprite::create(".\\Skills\\SideStepFrozen.png");
+	addChild(FBspic2, 8);
+	FBspic1->setPosition(PLAYER_HP_GRAY->getPositionX() + 30, PLAYER_HP_GRAY->getPositionY() - 80);
+	FBspic2->setPosition(PLAYER_HP_GRAY->getPositionX() + 30, PLAYER_HP_GRAY->getPositionY() - 80);
+	addChild(SSspic2, 8);
+	SSspic1->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 80);
+	SSspic2->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 80);
+	FBTimer = ProgressTimer::create(FBspic1); SSTimer = ProgressTimer::create(SSspic1);
+	FBTimer->setType(ProgressTimer::Type::RADIAL); SSTimer->setType(ProgressTimer::Type::RADIAL);
+	FBTimer->setPosition(PLAYER_HP_GRAY->getPositionX() + 30, PLAYER_HP_GRAY->getPositionY() - 80);
+	SSTimer->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 80);
+	addChild(FBTimer, 9); addChild(SSTimer, 9);
+	FBTimer->runAction(ProgressTo::create(0.01, 100)); SSTimer->runAction(ProgressTo::create(0.01, 100));
+
 	shadeLayer = Layer::create();
 	addChild(shadeLayer, 4);
 	enemyLayer = Layer::create();
@@ -102,6 +121,14 @@ bool BattleScene::init()
 
 			(*f)->runAction(MoveBy::create(1.5, Vec2(deltaX, deltaY)));
 			_fireballs.erase(_fireballs.begin());
+		}
+		else {
+			Rect nar = NormalAttack::CreateAndPlay(t->getLocation().x, t->getLocation().y, this);
+			for (auto e = _enemies.begin(); e != _enemies.end(); ++e) {
+				if ((*e)->getBoundingBox().intersectsRect(nar)) {
+					(*e)->subHP(3);
+				}
+			}
 		}
 		return true;
 	};
@@ -173,12 +200,12 @@ void BattleScene::update(float dt)
 	PLAYER_MP_BLUE->setPosition(PLAYER_HP_GRAY->getPositionX(), PLAYER_HP_GRAY->getPositionY() - 30);
 	addChild(PLAYER_MP_BLUE, 9);
 
-	FBCD->removeFromParent();
+	/*FBCD->removeFromParent();
 	FBCD = LabelTTF::create(to_string((FireBallCD + 59) / 60), "Courier", 36); FBCD->setColor(Color3B(255, 255, 0));
 	addChild(FBCD, 8); FBCD->setPosition(PLAYER_HP_GRAY->getPositionX() + 60, PLAYER_HP_GRAY->getPositionY() - 60);
 	SSCD->removeFromParent();
 	SSCD = LabelTTF::create(to_string((SideStepCD + 59) / 60), "Courier", 36); SSCD->setColor(Color3B(0, 255, 255));
-	addChild(SSCD, 8); SSCD->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 60);
+	addChild(SSCD, 8); SSCD->setPosition(PLAYER_HP_GRAY->getPositionX() + 120, PLAYER_HP_GRAY->getPositionY() - 60);*/
 
 	if (!_fireballs.empty())
 		for (auto it = _fireballs.begin(); it != _fireballs.end(); ) {
@@ -228,6 +255,7 @@ void BattleScene::LoadFromFile(string mapName) {
 void BattleScene::CallFireBall()
 {
 	FireBallCD = 600;
+	FBTimer->runAction(ProgressFromTo::create(10, 0, 100));
 	ps->setFBCD();
 	auto f1 = FireBall::create(); f1->setAnchorPoint(Vec2(0.5, -0.7)); f1->setTag(0);
 	auto f2 = FireBall::create(); f2->setAnchorPoint(Vec2(1.7, 0.5)); f2->setTag(0);
@@ -243,6 +271,7 @@ void BattleScene::CallFireBall()
 void BattleScene::CallSideStep()
 {
 	SideStepCD = 120;
+	SSTimer->runAction(ProgressFromTo::create(2, 0, 100));
 	ps->setSSCD();
 	Actions a;
 	a.SideStep(shadeLayer, lastDirection);

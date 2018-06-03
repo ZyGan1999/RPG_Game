@@ -11,6 +11,10 @@ public:
 	virtual bool init();
 	CREATE_FUNC(Enemy);
 	void seekPlayer();
+	void setHP(int hp) {
+		HP = hp;
+		HPMax = hp;
+	}
 	double getHP() {
 		return HP;
 	}

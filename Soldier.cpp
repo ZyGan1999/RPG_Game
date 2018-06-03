@@ -9,6 +9,7 @@ bool Soldier::init()
 Enemy * Soldier::createSoldier()
 {
 	auto e = Enemy::create();
+	e->setHP(100);
 	e->initWithFile(SoldierFileName);
 	return e;
 }
