@@ -141,3 +141,4 @@ void World1::LoadFromFile() {
 		_objs.push_back(s);
 	}
 }
+

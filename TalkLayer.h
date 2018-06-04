@@ -16,5 +16,6 @@ private:
 	//Layer * talklayer;
 	string lines[100];
 	int curLineNum;
+	std::string string_To_UTF8(const std::string & str);
 };
 
