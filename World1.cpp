@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Actions.h"
 #include "BagScene.h"
+#include "TalkLayer.h"
 #include <fstream>
 #include <algorithm>
 string World1::MapFileName = ".\\World1\\MapFile.txt";
@@ -13,6 +14,10 @@ map<string, int> World1::SpriteTag = {
 	make_pair("piano",3)
 };
 bool World1::init() {
+	isKeyLocked = false;
+	talkLayer = TalkLayer::create();
+	talkLayer->setTalkLayer(".\\talk\\test.txt"); isKeyLocked = true;
+	addChild(talkLayer, 5);
 	this->scheduleUpdate();
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	auto bg1 = Sprite::create(".\\World1\\background1.png");
@@ -34,7 +39,11 @@ bool World1::init() {
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
 		if (code == EventKeyboard::KeyCode::KEY_B) Director::getInstance()->pushScene(BagScene::create());
-		keys[code] = true;
+		if (code == EventKeyboard::KeyCode::KEY_SPACE) {
+			talkLayer->nextLine();
+			if (talkLayer->getTag() == 1) isKeyLocked = false;
+		}
+		if(!isKeyLocked) keys[code] = true;
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {
 		keys[code] = false;

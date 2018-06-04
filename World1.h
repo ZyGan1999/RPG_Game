@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "TalkLayer.h"
 using namespace cocos2d;
 using namespace std;
 class World1:public Scene
@@ -24,5 +25,7 @@ private:
 	EventKeyboard::KeyCode lastDirection;
 	void Fix();	
 	Sprite* isCollided();
+	TalkLayer * talkLayer;
+	bool isKeyLocked;
 };
 

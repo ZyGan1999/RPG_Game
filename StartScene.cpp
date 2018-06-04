@@ -15,8 +15,8 @@ bool StartScene::init() {
 	auto StartButton = Menu::create(MenuItemImage::create(".\\startscene\\startNormal.png",
 		".\\startscene\\startSelected.png", 
 		[](Object *obj) {
-		//Director::getInstance()->replaceScene(World1::create());
-		Director::getInstance()->replaceScene(BattleScene::createScene());
+		Director::getInstance()->replaceScene(World1::create());
+		//Director::getInstance()->replaceScene(BattleScene::createScene());
 	}), NULL);
 	StartButton->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	addChild(StartButton, 2);
