@@ -11,11 +11,11 @@ Rect NormalAttack::CreateAndPlay(int posX, int posY, Scene * s)
 	double distance = sqrt(deltaX*deltaX + deltaY * deltaY);
 	auto animate = Animate::create(Animation::create(_animationframe, 0.5));
 	auto sp = Sprite::create();
-	if(distance <= 300){
+	if(distance <= 100){
 		sp->setPosition(posX, posY);
 	}
 	else {
-		double r = distance / 300;
+		double r = distance / 100;
 		deltaX /= r; deltaY /= r;
 		sp->setPosition(Player::getInstance()->getPositionX() + deltaX, Player::getInstance()->getPositionY() + deltaY);
 	}
@@ -40,16 +40,16 @@ bool NormalAttack::initvector()
 	a[10] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(4 * 192, 192, 192, 192)), 0.1, ValueMap());
 	a[11] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(0, 2 * 192, 192, 192)), 0.1, ValueMap());
 	a[12] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(192, 2 * 192, 192, 192)), 0.1, ValueMap());
-	a[13] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(2 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
-	a[14] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(3 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
-	a[15] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(4 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
-	a[16] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(0, 3 * 192, 192, 192)), 0.1, ValueMap());
-	a[17] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(192, 3 * 192, 192, 192)), 0.1, ValueMap());
-	a[18] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(2 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
-	a[19] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(3 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
-	a[20] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(4 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
+	//a[13] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(2 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
+	a[13] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(3 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
+	a[14] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(4 * 192, 2 * 192, 192, 192)), 0.1, ValueMap());
+	//a[16] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(0, 3 * 192, 192, 192)), 0.1, ValueMap());
+	//a[17] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(192, 3 * 192, 192, 192)), 0.1, ValueMap());
+	//a[18] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(2 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
+	//a[19] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(3 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
+	//a[20] = AnimationFrame::create(SpriteFrame::create(".\\bomb\\NA.png", Rect(4 * 192, 3 * 192, 192, 192)), 0.1, ValueMap());
 	
-	for (int i = 1; i <= 20; i++) {
+	for (int i = 1; i <= 14; i++) {
 		_animationframe.pushBack(a[i]);
 	}
 	return true;
