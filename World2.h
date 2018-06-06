@@ -6,21 +6,17 @@
 #include "TalkLayer.h"
 using namespace cocos2d;
 using namespace std;
-class World1:public Scene
+class World2:public Scene
 {
 public:
-	CREATE_FUNC(World1);
+	CREATE_FUNC(World2);
 	virtual bool init();
-	static void notTalk() {
-		isTalk = false;
-	}
 private:
-	static bool isTalk;
-	void Save();
 	void update(float delta);
 	static int GRID_SIZE;
 	void LoadFromFile();
 	void LoadFloor();
+	void Save();
 	Vector<Sprite*> _objs;
 	static string MapFileName;
 	static map<string, Rect> SpriteRect;
@@ -31,7 +27,7 @@ private:
 	Sprite * player;
 	Sprite * move;
 	EventKeyboard::KeyCode lastDirection;
-	void Fix();	
+	void Fix();
 	Vector<Sprite * >::iterator isCollided();
 	TalkLayer * talkLayer;
 	bool isKeyLocked;

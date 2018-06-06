@@ -1,15 +1,15 @@
-#include "World1.h"
 #include "World2.h"
+#include"World1.h"
 #include "Player.h"
 #include "Actions.h"
 #include "BagScene.h"
 #include "TalkLayer.h"
+#include "BattleScene.h"
 #include <fstream>
 #include <algorithm>
-string World1::MapFileName = ".\\World1\\MapFile.txt";
-int World1::GRID_SIZE = 48;
-bool World1::isTalk = true;
-map<string, Rect> World1::SpriteRect = {
+string World2::MapFileName = ".\\World2\\MapFile.txt";
+int World2::GRID_SIZE = 48;
+map<string, Rect> World2::SpriteRect = {
 	make_pair("piano",Rect(5 * GRID_SIZE,12 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE)),
 	make_pair("floor",Rect(5 * GRID_SIZE,6 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
 	make_pair("wall",Rect(10 * GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE)),
@@ -22,7 +22,7 @@ map<string, Rect> World1::SpriteRect = {
 	make_pair("pillar",Rect(15 * GRID_SIZE,3 * GRID_SIZE, GRID_SIZE,3 * GRID_SIZE)),
 	make_pair("board",Rect(13 * GRID_SIZE,12 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE))
 };
-map<string, int> World1::SpriteTag = {
+map<string, int> World2::SpriteTag = {
 	make_pair("piano",3),
 	make_pair("shelf",3),
 	make_pair("desk1",2),
@@ -33,7 +33,7 @@ map<string, int> World1::SpriteTag = {
 	make_pair("pillar",3),
 	make_pair("board",3)
 };
-map<string, string>World1::SpriteFile = {
+map<string, string>World2::SpriteFile = {
 	make_pair("piano",".\\World1\\objects1.png"),
 	make_pair("shelf",".\\World1\\objects1.png"),
 	make_pair("desk1",".\\World1\\objects1.png"),
@@ -44,29 +44,33 @@ map<string, string>World1::SpriteFile = {
 	make_pair("pillar",".\\World1\\objects2.png"),
 	make_pair("board",".\\World1\\objects2.png")
 };
-bool World1::init() {
-	LoadFloor();
+bool World2::init() {
+	//LoadFloor();
+	auto visiablesize = Director::getInstance()->getVisibleSize();
 	move = Sprite::create(".\\World1\\move.png");
-	move->setPosition(900, 500);
+	move->setPosition(300, 300);
 	addChild(move, 3);
 	isKeyLocked = false;
 	talkLayer = TalkLayer::create();
-	if (isTalk) {
-		talkLayer->setTalkLayer(".\\talk\\test.txt"); isKeyLocked = true;
-	}
+	//talkLayer->setTalkLayer(""); isKeyLocked = true;
+	auto bg1 = Sprite::create("World1\\background1.png"); bg1->setContentSize(visiablesize);
+	auto bg2 = Sprite::create("World1\\background2.png"); bg2->setContentSize(visiablesize);
+	bg1->setPosition(visiablesize.width / 2, visiablesize.height / 2);
+	bg2->setPosition(visiablesize.width / 2, visiablesize.height / 2);
+	addChild(bg1, 1); addChild(bg2, 2);
+	
 	addChild(talkLayer, 5);
 	this->scheduleUpdate();
-	auto visiablesize = Director::getInstance()->getVisibleSize();
 
 	player = Player::getInstance();
 	addChild(player, 3);
-	player->setPosition(visiablesize.width / 5, visiablesize.height / 2);
+	player->setPosition(visiablesize.width * 0.8, visiablesize.height / 2);
 	LoadFromFile();
 	ObjectLayer = Layer::create();
 	for (auto it = _objs.begin(); it != _objs.end(); ++it) {
 		ObjectLayer->addChild((*it), 4);
 	}
-	addChild(ObjectLayer,4);
+	addChild(ObjectLayer, 4);
 
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
@@ -75,7 +79,7 @@ bool World1::init() {
 			talkLayer->nextLine();
 			if (talkLayer->getTag() == 1) isKeyLocked = false;
 		}
-		if(!isKeyLocked) keys[code] = true;
+		if (!isKeyLocked) keys[code] = true;
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {
 		keys[code] = false;
@@ -85,17 +89,7 @@ bool World1::init() {
 
 	return true;
 }
-void World1::Save()
-{
-	ofstream SaveObj(MapFileName);
-	bool flag = false;
-	for (auto i = _objs.begin(); i != _objs.end(); ++i) {
-		if (flag) SaveObj << endl;
-		SaveObj << (*i)->getName() << ' ' << (*i)->getPositionX() << ' ' << (*i)->getPositionY();
-		flag = true;
-	}
-}
-void World1::update(float delta) {
+void World2::update(float delta) {
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	Actions a;
 	if (player->getPositionY() > 650) {
@@ -127,7 +121,6 @@ void World1::update(float delta) {
 		case 4: {
 			auto bs = Sprite::create(SpriteFile["brokencan"], SpriteRect["brokencan"]);
 			bs->setTag(2);
-			bs->setName("brokencan");
 			bs->setPosition((*s)->getPositionX(), (*s)->getPositionY());
 			ObjectLayer->addChild(bs);
 			_objs.pushBack(bs);
@@ -153,7 +146,7 @@ void World1::update(float delta) {
 			/*getBread->runAction(MoveBy::create(5, Vec2(0, 1000)));
 			getTea->runAction(MoveBy::create(5, Vec2(0, 1000)));*/
 			auto delayTime1 = DelayTime::create(2.0f);
-			auto GET = CallFunc::create([getBread,getTea]()
+			auto GET = CallFunc::create([getBread, getTea]()
 			{
 				getBread->removeFromParent();
 				getTea->removeFromParent();
@@ -162,21 +155,28 @@ void World1::update(float delta) {
 			this->runAction(seq1);
 			break;
 		}
+		case 5: {
+			(*s)->removeFromParent();
+			_objs.eraseObject(*s);
+			Director::getInstance()->pushScene(BattleScene::createScene());
+			break;
+		}
 		}
 	}
 
 	if (player->getBoundingBox().intersectsRect(move->getBoundingBox())) {
-		Save();
-		Director::getInstance()->replaceScene(World2::create());
+		World1::notTalk();
+		auto w1 = World1::create();
+		Director::getInstance()->replaceScene(w1);
 	}
 
-	if (keys[EventKeyboard::KeyCode::KEY_A])player->runAction(a.MoveLeft),lastDirection = EventKeyboard::KeyCode::KEY_A;
+	if (keys[EventKeyboard::KeyCode::KEY_A])player->runAction(a.MoveLeft), lastDirection = EventKeyboard::KeyCode::KEY_A;
 	if (keys[EventKeyboard::KeyCode::KEY_D])player->runAction(a.MoveRight), lastDirection = EventKeyboard::KeyCode::KEY_D;
-	if (keys[EventKeyboard::KeyCode::KEY_W])player->runAction(a.MoveUp),lastDirection = EventKeyboard::KeyCode::KEY_W;
-	if (keys[EventKeyboard::KeyCode::KEY_S])player->runAction(a.MoveDown),lastDirection = EventKeyboard::KeyCode::KEY_S;
+	if (keys[EventKeyboard::KeyCode::KEY_W])player->runAction(a.MoveUp), lastDirection = EventKeyboard::KeyCode::KEY_W;
+	if (keys[EventKeyboard::KeyCode::KEY_S])player->runAction(a.MoveDown), lastDirection = EventKeyboard::KeyCode::KEY_S;
 }
 
-Vector<Sprite * >::iterator World1::isCollided()
+Vector<Sprite * >::iterator World2::isCollided()
 {
 	auto it = _objs.begin();
 	auto pb = player->getBoundingBox();
@@ -189,7 +189,7 @@ Vector<Sprite * >::iterator World1::isCollided()
 	return it;
 }
 
-void World1::Fix()
+void World2::Fix()
 {
 	keys[EventKeyboard::KeyCode::KEY_A] = false;
 	keys[EventKeyboard::KeyCode::KEY_S] = false;
@@ -203,7 +203,7 @@ void World1::Fix()
 	}
 }
 
-void World1::LoadFromFile() {
+void World2::LoadFromFile() {
 	ifstream ReadMap(MapFileName);
 	while (!ReadMap.eof()) {
 		string curLine;
@@ -227,7 +227,7 @@ void World1::LoadFromFile() {
 		_objs.pushBack(s);
 	}
 }
-void World1::LoadFloor() {
+void World2::LoadFloor() {
 	for (int i = 0; i <= 30; i++) {
 		for (int j = 0; j <= 25; j++) {
 			auto f = Sprite::create(".\\World1\\floor.png", SpriteRect["floor"]);
@@ -241,5 +241,15 @@ void World1::LoadFloor() {
 		w->setAnchorPoint(Vec2(0, 1));
 		w->setPosition(2 * i * GRID_SIZE, Director::getInstance()->getVisibleSize().height);
 		addChild(w, 2);
+	}
+}
+void World2::Save()
+{
+	ofstream SaveObj(MapFileName);
+	bool flag = false;
+	for (auto i = _objs.begin(); i != _objs.end(); ++i) {
+		if (flag) SaveObj << endl;
+		SaveObj << (*i)->getName() << ' ' << (*i)->getPositionX() << ' ' << (*i)->getPositionY();
+		flag = true;
 	}
 }
