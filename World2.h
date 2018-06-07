@@ -11,8 +11,14 @@ class World2:public Scene
 public:
 	CREATE_FUNC(World2);
 	virtual bool init();
+	static void notTalk() {
+		isTalk = false;
+	}
 private:
 	void update(float delta);
+	Sprite * Soldier;
+	Sprite * sister;
+	static bool isTalk;
 	static int GRID_SIZE;
 	void LoadFromFile();
 	void LoadFloor();

@@ -9,6 +9,7 @@
 #include <algorithm>
 string World2::MapFileName = ".\\World2\\MapFile.txt";
 int World2::GRID_SIZE = 48;
+bool World2::isTalk = true;
 map<string, Rect> World2::SpriteRect = {
 	make_pair("piano",Rect(5 * GRID_SIZE,12 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE)),
 	make_pair("floor",Rect(5 * GRID_SIZE,6 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
@@ -46,18 +47,30 @@ map<string, string>World2::SpriteFile = {
 };
 bool World2::init() {
 	//LoadFloor();
-	auto visiablesize = Director::getInstance()->getVisibleSize();
-	move = Sprite::create(".\\World1\\move.png");
-	move->setPosition(300, 300);
-	addChild(move, 3);
 	isKeyLocked = false;
+	auto visiablesize = Director::getInstance()->getVisibleSize();
 	talkLayer = TalkLayer::create();
-	//talkLayer->setTalkLayer(""); isKeyLocked = true;
-	auto bg1 = Sprite::create("World1\\background1.png"); bg1->setContentSize(visiablesize);
-	auto bg2 = Sprite::create("World1\\background2.png"); bg2->setContentSize(visiablesize);
+	if(isTalk){
+	Soldier = Sprite::create(".\\World2\\Soldier.png");
+	sister = Sprite::create(".\\World2\\sister.png", Rect(8 * 64, 5 * 64, 64, 64));
+	Soldier->setPosition(visiablesize.width / 2 - 200, visiablesize.height / 2);
+	sister->setPosition(Soldier->getPositionX() + 200, Soldier->getPositionY() - 100);
+	addChild(Soldier, 3); addChild(sister, 3);
+	talkLayer->setTalkLayer(".\\talk\\world2.txt"); isKeyLocked = true;
+	}
+
+	move = Sprite::create(".\\World1\\move.png");
+	move->setPosition(100, 300);
+	addChild(move, 3);
+	
+
+
+	auto bg1 = Sprite::create(".\\World1\\background1.png"); bg1->setContentSize(visiablesize);
+	auto bg2 = Sprite::create(".\\World1\\background2.png"); bg2->setContentSize(visiablesize);
 	bg1->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	bg2->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	addChild(bg1, 1); addChild(bg2, 2);
+	
 	
 	addChild(talkLayer, 5);
 	this->scheduleUpdate();
@@ -76,9 +89,10 @@ bool World2::init() {
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
 		if (code == EventKeyboard::KeyCode::KEY_B) Director::getInstance()->pushScene(BagScene::create());
 		if (code == EventKeyboard::KeyCode::KEY_SPACE) {
-			talkLayer->nextLine();
+			if (talkLayer->getTag() == 0)talkLayer->nextLine();
 			if (talkLayer->getTag() == 1) isKeyLocked = false;
 		}
+		
 		if (!isKeyLocked) keys[code] = true;
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {
@@ -164,8 +178,26 @@ void World2::update(float delta) {
 		}
 	}
 
+	if (isTalk) {
+		if (player->getBoundingBox().intersectsRect(Soldier->getBoundingBox())) {
+			keys[EventKeyboard::KeyCode::KEY_A] = false;
+			keys[EventKeyboard::KeyCode::KEY_S] = false;
+			keys[EventKeyboard::KeyCode::KEY_D] = false;
+			keys[EventKeyboard::KeyCode::KEY_W] = false;
+			Soldier->setPosition(-100, -100);
+			Soldier->removeFromParent();
+			sister->removeFromParent();
+			isTalk = false;
+			talkLayer->setTalkLayer(".\\talk\\world2-2.txt"); isKeyLocked = true;
+			Director::getInstance()->pushScene(BattleScene::createScene());
+			
+			
+		}
+	}
+
 	if (player->getBoundingBox().intersectsRect(move->getBoundingBox())) {
 		World1::notTalk();
+		World2::notTalk();
 		auto w1 = World1::create();
 		Director::getInstance()->replaceScene(w1);
 	}

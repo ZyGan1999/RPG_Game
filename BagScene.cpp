@@ -1,6 +1,7 @@
 #include "BagScene.h"
 #include "StartScene.h"
 #include "PlayerStatus.h"
+#include "Player.h"
 #include<fstream>
 string BagScene::bag_file_name = ".\\bagobject\\bag.txt";
 string BagScene::resourcename = ".\\bagobject\\resource.png";

@@ -3,7 +3,11 @@
 
 void TalkLayer::setTalkLayer(string talkfilename)
 {
+	this->setTag(0);
 	memset(lines, 0, sizeof(string));
+	//for (int i = 1; i <= 100; i++) {
+	//	lines[i] = "";
+	//}
 	curLineNum = 1;
 	LoadFromFile(talkfilename);
 	AnalyzeLine(curLineNum);
@@ -52,6 +56,27 @@ void TalkLayer::AnalyzeLine(int lineNum)
 	}
 	case 's': {
 		auto cg = Sprite::create(".\\CG\\sisterCG.png");
+		cg->setScale(0.5);
+		//position
+		cg->setPosition(visiablesize.width / 5, visiablesize.height / 2 - 50);
+		this->addChild(cg, 1);
+		string word = "";
+		for (int i = 2; i < lines[lineNum].length(); i++) {
+			//if ((i - 1) % 7 == 0) word += '\n';
+			word += lines[lineNum][i];
+		}
+		auto WordLabel = LabelTTF::create(string_To_UTF8(word), "Courier", 16);
+		//position
+		WordLabel->setPosition(visiablesize.width * 0.7, visiablesize.height / 5);
+		this->addChild(WordLabel, 3);
+		auto talkbox = Sprite::create(".\\talk\\wordbox.png");
+		talkbox->setPosition(visiablesize.width *0.7, visiablesize.height / 5);
+		talkbox->setScale(0.4);
+		this->addChild(talkbox, 2);
+		break;
+	}
+	case 'l': {
+		auto cg = Sprite::create(".\\CG\\Soldier.png");
 		cg->setScale(2);
 		//position
 		cg->setPosition(visiablesize.width / 5, visiablesize.height / 2 - 50);
@@ -69,6 +94,7 @@ void TalkLayer::AnalyzeLine(int lineNum)
 		talkbox->setPosition(visiablesize.width *0.7, visiablesize.height / 5);
 		talkbox->setScale(0.4);
 		this->addChild(talkbox, 2);
+
 		break;
 	}
 	case 'e': {

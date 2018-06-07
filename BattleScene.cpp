@@ -155,6 +155,12 @@ void BattleScene::enemyMove(float dt)
 
 void BattleScene::update(float dt)
 {
+	if (_enemies.empty()) {
+		player->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		Director::getInstance()->popScene();
+	}
+
+
 	if (FireBallCD != 0) {
 		FireBallCD--;
 		if (FireBallCD == 0) {
