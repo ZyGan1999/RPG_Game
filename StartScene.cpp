@@ -3,7 +3,12 @@
 #include "HelloWorldScene.h"
 #include "World1.h"
 #include "BattleScene.h"
+#include <SimpleAudioEngine.h>
+using namespace CocosDenshion;
 bool StartScene::init() {
+	auto audio = SimpleAudioEngine::getInstance();
+	audio->setBackgroundMusicVolume(0.1);
+	audio->playBackgroundMusic(".\\Music\\poem.wav", 1);
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	auto BackGround = Sprite::create(".\\startscene\\Tower1.png");
 	BackGround->setContentSize(visiablesize);

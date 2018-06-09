@@ -172,7 +172,7 @@ void World2::update(float delta) {
 		case 5: {
 			(*s)->removeFromParent();
 			_objs.eraseObject(*s);
-			Director::getInstance()->pushScene(BattleScene::createScene());
+			Director::getInstance()->pushScene(BattleScene::createScene("World1"));
 			break;
 		}
 		}
@@ -189,7 +189,7 @@ void World2::update(float delta) {
 			sister->removeFromParent();
 			isTalk = false;
 			talkLayer->setTalkLayer(".\\talk\\world2-2.txt"); isKeyLocked = true;
-			Director::getInstance()->pushScene(BattleScene::createScene());
+			Director::getInstance()->pushScene(BattleScene::createScene("World1"));
 			
 			
 		}

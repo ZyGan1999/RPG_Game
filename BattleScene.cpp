@@ -5,14 +5,18 @@
 #include "PlayerStatus.h"
 #include "GameOverScene.h"
 #include "NormalAttack.h"
+#include <SimpleAudioEngine.h>
 #include <fstream>
+using namespace CocosDenshion;
 string BattleScene::mapName = "World1";
 map<string, string> BattleScene::enemyfile = {
-	make_pair("World1",".\\World1\\enemylist.txt")
+	make_pair("World1",".\\World1\\enemylist.txt"),
+	make_pair("World3",".\\World3\\enemylist.txt")
 };
 
 bool BattleScene::init()
 {
+	SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\Another.wav");
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	ps = PlayerStatus::getInstance();
 	player = Player::getInstance();
@@ -109,6 +113,7 @@ bool BattleScene::init()
 	auto touchlistener = EventListenerTouchOneByOne::create();
 	touchlistener->onTouchBegan = [this](Touch *t, Event *e) {
 		if (!_fireballs.empty()) {
+			SimpleAudioEngine::getInstance()->playEffect(".\\Music\\firefly.wav");
 			auto f = &_fireballs[0];
 			_releasedFireBalls.push_back((*f));
 			(*f)->setAnchorPoint(Vec2(0.5, 0.5));
@@ -124,6 +129,7 @@ bool BattleScene::init()
 		}
 		else {
 			Rect nar = NormalAttack::CreateAndPlay(t->getLocation().x, t->getLocation().y, this);
+			SimpleAudioEngine::getInstance()->playEffect(".\\Music\\NA.wav");
 			for (auto e = _enemies.begin(); e != _enemies.end(); ++e) {
 				if ((*e)->getBoundingBox().intersectsRect(nar)) {
 					(*e)->subHP(3);
@@ -141,7 +147,7 @@ bool BattleScene::init()
 	return true;
 }
 
-Scene * BattleScene::createScene()
+Scene * BattleScene::createScene(string mapName)
 {
 	return BattleScene::create();
 }
@@ -157,6 +163,7 @@ void BattleScene::update(float dt)
 {
 	if (_enemies.empty()) {
 		player->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\poem.wav");
 		Director::getInstance()->popScene();
 	}
 
@@ -260,6 +267,7 @@ void BattleScene::LoadFromFile(string mapName) {
 
 void BattleScene::CallFireBall()
 {
+	SimpleAudioEngine::getInstance()->playEffect(".\\Music\\fire.wav");
 	FireBallCD = 600;
 	FBTimer->runAction(ProgressFromTo::create(10, 0, 100));
 	ps->setFBCD();
@@ -276,6 +284,7 @@ void BattleScene::CallFireBall()
 
 void BattleScene::CallSideStep()
 {
+	SimpleAudioEngine::getInstance()->playEffect(".\\Music\\ss.wav");
 	SideStepCD = 120;
 	SSTimer->runAction(ProgressFromTo::create(2, 0, 100));
 	ps->setSSCD();

@@ -12,11 +12,12 @@ class BattleScene:public Scene
 {
 public:
 	virtual bool init();
-	static Scene * createScene();
+	static Scene * createScene(string mapName);
 	CREATE_FUNC(BattleScene);
+	
+private:
 	void enemyMove(float dt);
 	void update(float dt);
-private:
 	Layer * shadeLayer;
 	Layer * enemyLayer;
 	PlayerStatus * ps;
