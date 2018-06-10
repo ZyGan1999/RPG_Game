@@ -15,19 +15,27 @@ bool Enemy::init()
 
 void Enemy::seekPlayer()
 {
+	int movedistance;
+	int flag = 0;
+	if (this->getName() == "Soldier") movedistance = 48;
+	if (this->getName() == "WindSprite") movedistance = 60,flag = 1;
+	int dd = rand() % 100;
 
 	if (!this->getBoundingBox().intersectsRect(player->getBoundingBox())) {
 		double deltaX = player->getPositionX() - this->getPositionX();
 		double deltaY = player->getPositionY() - this->getPositionY();
 		
-		double r = sqrt(deltaX * deltaX + deltaY * deltaY) / 48;
+		double r = sqrt(deltaX * deltaX + deltaY * deltaY) / (movedistance + flag * dd);
 		deltaX /= r; deltaY /= r;
 		this->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
 		blood1->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
 		blood2->runAction(MoveBy::create(1, Vec2(deltaX, deltaY)));
 	}
 	else {
-		ps->SubHP(7);
+		int harm;
+		if (this->getName() == "Soldier") harm = 7;
+		if (this->getName() == "WindSprite") harm = 5;
+		ps->SubHP(harm);
 		if(!ps->isPlayerBlinking()){
 			ps->setBlinking();
 			//ps->FreezeBlinking();

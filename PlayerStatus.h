@@ -75,5 +75,9 @@ public:
 	bool CheckSSCD() {
 		return isSSCD;
 	}
+	static void releaseAllCD() {
+		isFBCD = false;
+		isSSCD = false;
+	}
 };
 

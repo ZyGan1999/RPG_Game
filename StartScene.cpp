@@ -2,6 +2,7 @@
 #include "BagScene.h"
 #include "HelloWorldScene.h"
 #include "World1.h"
+#include "World3.h"
 #include "BattleScene.h"
 #include <SimpleAudioEngine.h>
 using namespace CocosDenshion;

@@ -1,6 +1,5 @@
-#include "World2.h"
-#include "World1.h"
 #include "World3.h"
+#include "World2.h"
 #include "Player.h"
 #include "Actions.h"
 #include "BagScene.h"
@@ -10,74 +9,68 @@
 #include <fstream>
 #include <algorithm>
 using namespace CocosDenshion;
-string World2::MapFileName = ".\\World2\\MapFile.txt";
-int World2::GRID_SIZE = 48;
-bool World2::isTalk = true;
-map<string, Rect> World2::SpriteRect = {
-	make_pair("piano",Rect(5 * GRID_SIZE,12 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE)),
-	make_pair("floor",Rect(5 * GRID_SIZE,6 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
-	make_pair("wall",Rect(10 * GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE)),
-	make_pair("shelf",Rect(6 * GRID_SIZE,8 * GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE)),
-	make_pair("desk1",Rect(0,12 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
-	make_pair("desk2",Rect(GRID_SIZE,12 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
+string World3::MapFileName = ".\\World3\\MapFile.txt";
+int World3::GRID_SIZE = 48;
+map<string, Rect> World3::SpriteRect = {
 	make_pair("can",Rect(9 * GRID_SIZE,9 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
 	make_pair("brokencan",Rect(10 * GRID_SIZE,9 * GRID_SIZE,GRID_SIZE,GRID_SIZE)),
-	make_pair("blackboard",Rect(0,0,3 * GRID_SIZE, 2 * GRID_SIZE)),
-	make_pair("pillar",Rect(15 * GRID_SIZE,3 * GRID_SIZE, GRID_SIZE,3 * GRID_SIZE)),
-	make_pair("board",Rect(13 * GRID_SIZE,12 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE))
+	make_pair("pillar",Rect(4 * GRID_SIZE,9 * GRID_SIZE, GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("grass",Rect(0,0,2 * GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("fence",Rect(13 * GRID_SIZE,0,GRID_SIZE,GRID_SIZE)),
+	make_pair("pool",Rect(0,GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("bare",Rect(2 * GRID_SIZE,GRID_SIZE,2 * GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("statue",Rect(10 * GRID_SIZE,10 * GRID_SIZE,GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("fountain",Rect(0,2 * GRID_SIZE,3 * GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("flower",Rect(4 * GRID_SIZE,4 * GRID_SIZE,3 * GRID_SIZE,GRID_SIZE)),
+	make_pair("dustbin",Rect(14 * GRID_SIZE,0,2 * GRID_SIZE,GRID_SIZE)),
+	make_pair("light",Rect(5 * GRID_SIZE,10 * GRID_SIZE,GRID_SIZE,2 * GRID_SIZE)),
+	make_pair("road",Rect(5 * GRID_SIZE,0,GRID_SIZE,2 * GRID_SIZE))
 };
-map<string, int> World2::SpriteTag = {
-	make_pair("piano",3),
-	make_pair("shelf",3),
-	make_pair("desk1",2),
-	make_pair("desk2",2),
+map<string, int> World3::SpriteTag = {
 	make_pair("can",4),
 	make_pair("brokencan",2),
-	make_pair("blackboard",2),
 	make_pair("pillar",3),
-	make_pair("board",3)
+	make_pair("fence",3),
+	make_pair("pool",2),
+	make_pair("bare",1),
+	make_pair("statue",3),
+	make_pair("fountain",2),
+	make_pair("flower",2),
+	make_pair("dustbin",2),
+	make_pair("light",3)
 };
-map<string, string>World2::SpriteFile = {
-	make_pair("piano",".\\World1\\objects1.png"),
-	make_pair("shelf",".\\World1\\objects1.png"),
-	make_pair("desk1",".\\World1\\objects1.png"),
-	make_pair("desk2",".\\World1\\objects1.png"),
+map<string, string>World3::SpriteFile = {
 	make_pair("can",".\\World1\\objects1.png"),
 	make_pair("brokencan",".\\World1\\objects1.png"),
-	make_pair("blackboard",".\\World1\\objects2.png"),
-	make_pair("pillar",".\\World1\\objects2.png"),
-	make_pair("board",".\\World1\\objects2.png")
+	make_pair("pillar",".\\World3\\world3-2.png"),
+	make_pair("fence",".\\World3\\grass.png"),
+	make_pair("pool",".\\World3\\world3.png"),
+	make_pair("bare",".\\World3\\grass.png"),
+	make_pair("statue",".\\World1\\objects2.png"),
+	make_pair("fountain",".\\World3\\world3-2.png"),
+	make_pair("flower",".\\World3\\world3-2.png"),
+	make_pair("dustbin",".\\World3\\world3-3.png"),
+	make_pair("light",".\\World3\\world3-3.png")
 };
-bool World2::init() {
-	//LoadFloor();
+bool World3::init() {
+	schedule(schedule_selector(World3::enemyMove), 1.0f);
+	LoadFloor();
+	EnemyLayer = Layer::create();
 	isKeyLocked = false;
 	auto visiablesize = Director::getInstance()->getVisibleSize();
-	talkLayer = TalkLayer::create();
-	if(isTalk){
-	Soldier = Sprite::create(".\\World2\\Soldier.png");
-	sister = Sprite::create(".\\World2\\sister.png", Rect(8 * 64, 5 * 64, 64, 64));
-	Soldier->setPosition(visiablesize.width / 2 - 200, visiablesize.height / 2);
-	sister->setPosition(Soldier->getPositionX() + 200, Soldier->getPositionY() - 100);
-	addChild(Soldier, 3); addChild(sister, 3);
-	talkLayer->setTalkLayer(".\\talk\\world2.txt"); isKeyLocked = true;
-	}
-
 	move = Sprite::create(".\\World1\\move.png");
 	move->setPosition(100, 300);
 	addChild(move, 3);
-	
-	move2 = Sprite::create(".\\World1\\move.png");
-	move2->setPosition(800, 100);
-	addChild(move2, 3);
+	isBattle = true;
+	for (int i = 0; i < 5; i++) {
+		auto s = Sprite::create(".\\Enemy\\Windspirit.png");
+		s->setContentSize(Size(50, 50));
+		s->setPosition(i * 50 + 200, 600);
+		_enemies.pushBack(s);
+		EnemyLayer->addChild(s);
+	}
+	addChild(EnemyLayer, 5);
 
-	auto bg1 = Sprite::create(".\\World1\\background1.png"); bg1->setContentSize(visiablesize);
-	auto bg2 = Sprite::create(".\\World1\\background2.png"); bg2->setContentSize(visiablesize);
-	bg1->setPosition(visiablesize.width / 2, visiablesize.height / 2);
-	bg2->setPosition(visiablesize.width / 2, visiablesize.height / 2);
-	addChild(bg1, 1); addChild(bg2, 2);
-	
-	
-	addChild(talkLayer, 5);
 	this->scheduleUpdate();
 
 	player = Player::getInstance();
@@ -93,12 +86,7 @@ bool World2::init() {
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
 		if (code == EventKeyboard::KeyCode::KEY_B) Director::getInstance()->pushScene(BagScene::create());
-		if (code == EventKeyboard::KeyCode::KEY_SPACE) {
-			if (talkLayer->getTag() == 0)talkLayer->nextLine();
-			if (talkLayer->getTag() == 1) isKeyLocked = false;
-		}
-		
-		if (!isKeyLocked) keys[code] = true;
+		keys[code] = true;
 	};
 	keylistener->onKeyReleased = [&](EventKeyboard::KeyCode code, Event *e) {
 		keys[code] = false;
@@ -108,10 +96,10 @@ bool World2::init() {
 
 	return true;
 }
-void World2::update(float delta) {
+void World3::update(float delta) {
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	Actions a;
-	if (player->getPositionY() > 650) {
+	if (player->getPositionY() > 718) {
 		keys[EventKeyboard::KeyCode::KEY_W] = false;
 	}
 	if (player->getPositionY() < 50) {
@@ -143,7 +131,7 @@ void World2::update(float delta) {
 			bs->setPosition((*s)->getPositionX(), (*s)->getPositionY());
 			ObjectLayer->addChild(bs);
 			_objs.pushBack(bs);
-			(*s)->removeFromParent();
+			(*s)->removeFromParentAndCleanup(true);
 			_objs.eraseObject(*s);
 			int breadNum; int teaNum;
 			breadNum = rand() % 5; breadNum++;
@@ -183,34 +171,32 @@ void World2::update(float delta) {
 		}
 	}
 
-	if (isTalk) {
-		if (player->getBoundingBox().intersectsRect(Soldier->getBoundingBox())) {
+
+	if (player->getBoundingBox().intersectsRect(move->getBoundingBox())) {
+		//World1::notTalk();
+		World2::notTalk();
+		auto w2 = World2::create();
+		Director::getInstance()->replaceScene(w2);
+	}
+	if(isBattle)
+	for (auto it = _enemies.begin(); it != _enemies.end(); ++it) {
+		if ((*it)->getPositionX() < 50) (*it)->setPositionX(50);
+		if ((*it)->getPositionX() > 974) (*it)->setPositionX(974);
+		if ((*it)->getPositionY() < 50) (*it)->setPositionY(50);
+		if ((*it)->getPositionY() > 718) (*it)->setPositionY(718);
+		if ((*it)->getBoundingBox().intersectsRect(player->getBoundingBox())) {
+			isBattle = false;
+			EnemyLayer->removeAllChildrenWithCleanup(true);
 			keys[EventKeyboard::KeyCode::KEY_A] = false;
 			keys[EventKeyboard::KeyCode::KEY_S] = false;
 			keys[EventKeyboard::KeyCode::KEY_D] = false;
 			keys[EventKeyboard::KeyCode::KEY_W] = false;
-			Soldier->setPosition(-100, -100);
-			Soldier->removeFromParent();
-			sister->removeFromParent();
-			isTalk = false;
-			talkLayer->setTalkLayer(".\\talk\\world2-2.txt"); isKeyLocked = true;
-			SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\Another.wav");
-			BattleScene::setBattleScene("World1");
+			SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\Lighting.wav", 1);
+			PlayerStatus::releaseAllCD();
+			BattleScene::setBattleScene("World3");
 			Director::getInstance()->pushScene(BattleScene::createScene());
-			
-			
 		}
-	}
-
-	if (player->getBoundingBox().intersectsRect(move->getBoundingBox())) {
-		World1::notTalk();
-		World2::notTalk();
-		Director::getInstance()->replaceScene(World1::create());
-	}
-	if (player->getBoundingBox().intersectsRect(move2->getBoundingBox())) {
-		World1::notTalk();
-		World2::notTalk();
-		Director::getInstance()->replaceScene(World3::create());
+		
 	}
 
 	if (keys[EventKeyboard::KeyCode::KEY_A])player->runAction(a.MoveLeft), lastDirection = EventKeyboard::KeyCode::KEY_A;
@@ -219,11 +205,11 @@ void World2::update(float delta) {
 	if (keys[EventKeyboard::KeyCode::KEY_S])player->runAction(a.MoveDown), lastDirection = EventKeyboard::KeyCode::KEY_S;
 }
 
-Vector<Sprite * >::iterator World2::isCollided()
+Vector<Sprite * >::iterator World3::isCollided()
 {
 	auto it = _objs.begin();
 	auto pb = player->getBoundingBox();
-	pb.setRect(pb.getMinX() + 10, pb.getMidY(), pb.size.width - 20, pb.size.height / 2);
+	//pb.setRect(pb.getMinX() + 10, pb.getMidY(), pb.size.width - 20, pb.size.height / 2);
 	for (; it != _objs.end(); ++it) {
 		if (pb.intersectsRect((*it)->getBoundingBox())) {
 			return it;
@@ -232,7 +218,7 @@ Vector<Sprite * >::iterator World2::isCollided()
 	return it;
 }
 
-void World2::Fix()
+void World3::Fix()
 {
 	keys[EventKeyboard::KeyCode::KEY_A] = false;
 	keys[EventKeyboard::KeyCode::KEY_S] = false;
@@ -246,7 +232,7 @@ void World2::Fix()
 	}
 }
 
-void World2::LoadFromFile() {
+void World3::LoadFromFile() {
 	ifstream ReadMap(MapFileName);
 	while (!ReadMap.eof()) {
 		string curLine;
@@ -270,23 +256,23 @@ void World2::LoadFromFile() {
 		_objs.pushBack(s);
 	}
 }
-void World2::LoadFloor() {
-	for (int i = 0; i <= 30; i++) {
-		for (int j = 0; j <= 25; j++) {
-			auto f = Sprite::create(".\\World1\\floor.png", SpriteRect["floor"]);
+void World3::LoadFloor() {
+	for (int i = 0; i <= 15; i++) {
+		for (int j = 0; j <= 10; j++) {
+			auto f = Sprite::create(".\\World3\\grass.png", SpriteRect["grass"]);
 			f->setAnchorPoint(Vec2(0, 0));
-			f->setPosition(i * GRID_SIZE, j * GRID_SIZE);
+			f->setPosition(i * 2 * GRID_SIZE, j * 2 * GRID_SIZE);
 			addChild(f, 1);
 		}
 	}
-	for (int i = 0; i <= 15; i++) {
-		auto w = Sprite::create(".\\World1\\wall.png", SpriteRect["wall"]);
+	for (int i = 0; i <= 30; i++) {
+		auto w = Sprite::create(".\\World3\\floor.png", SpriteRect["road"]);
 		w->setAnchorPoint(Vec2(0, 1));
-		w->setPosition(2 * i * GRID_SIZE, Director::getInstance()->getVisibleSize().height);
+		w->setPosition(i * GRID_SIZE, 350);
 		addChild(w, 2);
 	}
 }
-void World2::Save()
+void World3::Save()
 {
 	ofstream SaveObj(MapFileName);
 	bool flag = false;
@@ -294,5 +280,29 @@ void World2::Save()
 		if (flag) SaveObj << endl;
 		SaveObj << (*i)->getName() << ' ' << (*i)->getPositionX() << ' ' << (*i)->getPositionY();
 		flag = true;
+	}
+}
+
+void World3::enemyMove(float delta) {
+	for (auto it = _enemies.begin(); it != _enemies.end(); ++it) {
+		int direction = rand() % 4; direction++;
+		switch (direction) {
+		case 1: {
+			(*it)->runAction(MoveBy::create(1, Vec2(-100, 0)));
+			break;
+		}
+		case 2: {
+			(*it)->runAction(MoveBy::create(1, Vec2(100, 0)));
+			break;
+		}
+		case 3: {
+			(*it)->runAction(MoveBy::create(1, Vec2(0, 100)));
+			break;
+		}
+		case 4: {
+			(*it)->runAction(MoveBy::create(1, Vec2(0, -100)));
+			break;
+		}
+		}
 	}
 }

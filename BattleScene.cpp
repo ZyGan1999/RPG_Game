@@ -1,5 +1,6 @@
 #include "BattleScene.h"
 #include "Enemy.h"
+#include "WindSprite.h"
 #include "Soldier.h"
 #include "Actions.h"
 #include "PlayerStatus.h"
@@ -8,7 +9,9 @@
 #include <SimpleAudioEngine.h>
 #include <fstream>
 using namespace CocosDenshion;
-string BattleScene::mapName = "World1";
+Sprite * BattleScene::bg1;
+Sprite * BattleScene::bg2;
+string BattleScene::mapName;
 map<string, string> BattleScene::enemyfile = {
 	make_pair("World1",".\\World1\\enemylist.txt"),
 	make_pair("World3",".\\World3\\enemylist.txt")
@@ -16,7 +19,7 @@ map<string, string> BattleScene::enemyfile = {
 
 bool BattleScene::init()
 {
-	SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\Another.wav");
+	//SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\Another.wav");
 	auto visiablesize = Director::getInstance()->getVisibleSize();
 	ps = PlayerStatus::getInstance();
 	player = Player::getInstance();
@@ -74,13 +77,14 @@ bool BattleScene::init()
 	LoadFromFile(mapName);
 	for (auto it = _enemies.begin(); it != _enemies.end(); ++it) {
 		enemyLayer->addChild((*it));
-		(*it)->setPosition(visiablesize.width / 2, visiablesize.height / 2);
+		int dx = rand() % 200; int dy = rand() % 200;
+		(*it)->setPosition(visiablesize.width / 2 + dx, visiablesize.height / 2 + dy);
 		(*it)->setBlood(enemyLayer);
 	}
 	addChild(enemyLayer, 4);
 
-	auto bg1 = Sprite::create(".\\World1\\background1.png");
-	auto bg2 = Sprite::create(".\\World1\\background2.png");
+	/*bg1 = Sprite::create(".\\World1\\background1.png");
+	bg2 = Sprite::create(".\\World1\\background2.png");*/
 	bg1->setContentSize(visiablesize); bg1->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	bg2->setContentSize(visiablesize); bg2->setPosition(visiablesize.width / 2, visiablesize.height / 2);
 	addChild(bg1, 1); addChild(bg2, 2);
@@ -88,9 +92,9 @@ bool BattleScene::init()
 	auto keylistener = EventListenerKeyboard::create();
 	keylistener->onKeyPressed = [&](EventKeyboard::KeyCode code, Event *e) {
 		if (code == EventKeyboard::KeyCode::KEY_R) {
-			if (!ps->CheckFBCD() && ps->getMP() >= 40) {
+			if (!ps->CheckFBCD() && ps->getMP() >= 20) {
 				CallFireBall();
-				ps->SubMP(40);
+				ps->SubMP(20);
 			}
 			return;
 		}
@@ -147,7 +151,21 @@ bool BattleScene::init()
 	return true;
 }
 
-Scene * BattleScene::createScene(string mapName)
+void BattleScene::setBattleScene(string mn)
+{
+	mapName = mn;
+
+	if (mn == "World1") {
+		bg1 = Sprite::create(".\\World1\\background1.png");
+		bg2 = Sprite::create(".\\World1\\background2.png");
+	}
+	else if (mn == "World3") {
+		bg1 = Sprite::create(".\\World3\\Grassland.png");
+		bg2 = Sprite::create(".\\World3\\Brick.png");
+	}
+}
+
+Scene * BattleScene::createScene()
 {
 	return BattleScene::create();
 }
@@ -162,7 +180,6 @@ void BattleScene::enemyMove(float dt)
 void BattleScene::update(float dt)
 {
 	if (_enemies.empty()) {
-		player->setPosition(Director::getInstance()->getVisibleSize() / 2);
 		SimpleAudioEngine::getInstance()->playBackgroundMusic(".\\Music\\poem.wav");
 		Director::getInstance()->popScene();
 	}
@@ -259,8 +276,12 @@ void BattleScene::LoadFromFile(string mapName) {
 		string curName;
 		getline(ReadFile, curName);
 		if (curName == "Soldier") {
-			auto s = Soldier::createSoldier();
+			auto s = Soldier::createSoldier();	
 			_enemies.push_back(s);
+		}
+		else if (curName == "WindSprite") {
+			auto w = WindSprite::createWindSprite();
+			_enemies.push_back(w);
 		}
 	}
 }
