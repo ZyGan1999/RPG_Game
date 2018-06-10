@@ -33,7 +33,7 @@ bool BagScene::init() {
 		(*i)->setPosition(col*objectsize.width + 0.5*objectsize.width, visiablesize.height - row * objectsize.height - 0.5*objectsize.height);
 		addChild((*i));
 		//BagItemLayer->addChild((*i));
-		if (col == 8) col = 0, row++;
+		if (col == 7) col = 0, row++;
 		else col++;
 	}
 	auto backNormal = Sprite::create("back.png"); backNormal->setContentSize(objectsize);
